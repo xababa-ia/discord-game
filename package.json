@@ -1,0 +1,16 @@
+{
+  "name": "discord-narrative-game",
+  "version": "1.0.0",
+  "description": "Jeu narratif Discord - Activité嵌入 avec React et animations CSS",
+  "private": true,
+  "scripts": {
+    "install:all": "npm install && cd client && npm install && cd ../server && npm install",
+    "build:client": "cd client && npm run build",
+    "dev:server": "cd server && npm run dev",
+    "start": "cd server && npm start",
+    "dev": "npm run build:client && npm run dev:server"
+  },
+  "keywords": ["discord", "activity", "game", "narrative", "react"],
+  "author": "",
+  "license": "MIT"
+}
