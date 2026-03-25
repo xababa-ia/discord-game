@@ -3,28 +3,19 @@ import { StoryProvider, useStory } from './StoryContext';
 import { SceneDisplay } from './components/SceneDisplay';
 import { Choices } from './components/Choices';
 import { Scene } from './types';
-import { initializeDiscordSDK, updateDiscordActivity, getDiscordUser } from './discordSdk';
+import { initializeDiscordSDK } from './discordSdk';
 import './index.css';
 
 const GameContent: React.FC = () => {
   const { story, gameState } = useStory();
 
-  // Initialiser le SDK Discord et mettre à jour l'activité
+  // Initialiser le SDK Discord une seule fois
   useEffect(() => {
-    initializeDiscordSDK().then(() => {
-      getDiscordUser().then(user => {
-        console.log('Connecté à Discord en tant que:', user?.username);
-      });
-    }).catch(console.error);
+    const init = async () => {
+      await initializeDiscordSDK();
+    };
+    init().catch(console.error);
   }, []);
-
-  // Mettre à jour l'activité Discord quand la scène change
-  useEffect(() => {
-    const currentScene = story.scenes.find(s => s.id === gameState.currentSceneId);
-    if (currentScene) {
-      updateDiscordActivity(currentScene.id, currentScene.choices.length);
-    }
-  }, [gameState.currentSceneId, story.scenes]);
 
   // Trouver la scène courante
   const currentScene: Scene | undefined = story.scenes.find(s => s.id === gameState.currentSceneId);

@@ -1,9 +1,11 @@
 import { DiscordSDK } from '@discord/embedded-app-sdk';
 
 let discordSdk: DiscordSDK | null = null;
+let isInitialized = false;
 
 export const initializeDiscordSDK = async (): Promise<DiscordSDK | null> => {
-  if (discordSdk) return discordSdk;
+  // Si déjà initialisé, retourner l'instance
+  if (isInitialized) return discordSdk;
 
   // Utiliser any pour accéder à import.meta.env (déclaré dans vite-env.d.ts)
   const env = import.meta as any;
@@ -11,18 +13,23 @@ export const initializeDiscordSDK = async (): Promise<DiscordSDK | null> => {
 
   if (!clientId || clientId === 'votre_client_id_ici') {
     console.warn('⚠️ VITE_DISCORD_CLIENT_ID non configuré - mode simulation');
+    isInitialized = true;
     return null;
   }
 
-  // Utiliser any pour contourner les restrictions de types du SDK
-  discordSdk = new (DiscordSDK as any)(clientId);
-
   try {
+    // Utiliser any pour contourner les restrictions de types du SDK
+    discordSdk = new (DiscordSDK as any)(clientId);
+
     // ready() fait l'authentification automatiquement
     await (discordSdk as any).ready();
     console.log('✅ Discord SDK prêt et authentifié');
+    isInitialized = true;
   } catch (error) {
     console.error('❌ Erreur init Discord SDK:', error);
+    // En cas d'erreur, on marque comme initialisé pour éviter de réessayer en boucle
+    isInitialized = true;
+    discordSdk = null;
   }
 
   return discordSdk;
