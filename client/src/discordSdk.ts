@@ -18,16 +18,11 @@ export const initializeDiscordSDK = async (): Promise<DiscordSDK | null> => {
   discordSdk = new (DiscordSDK as any)(clientId);
 
   try {
+    // ready() fait l'authentification automatiquement
     await (discordSdk as any).ready();
-    console.log('✅ Discord SDK prêt');
-
-    // Authentification
-    await (discordSdk as any).commands.authenticate({
-      client_id: clientId,
-    });
-    console.log('✅ Authentifié avec Discord');
+    console.log('✅ Discord SDK prêt et authentifié');
   } catch (error) {
-    console.error('❌ Erreur auth Discord:', error);
+    console.error('❌ Erreur init Discord SDK:', error);
   }
 
   return discordSdk;
